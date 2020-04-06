@@ -1,5 +1,6 @@
 import express from "express";
 import app from "loaders/express";
+import "loaders/mongoose";
 import config from "./config";
 // import app fr
 

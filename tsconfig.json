@@ -13,9 +13,11 @@
     "paths": {
       "*": ["node_modules/*", "src/types/*"],
       "config/*": ["./src/config/*"],
+      "controllers/*": ["./src/controllers/*"],
       "core/*": ["./src/core/*"],
       "database/*": ["./src/database/*"],
       "helpers/*": ["./src/helpers/*"],
+      "interfaces/*": ["./src/interfaces/*"],
       "loaders/*": ["./src/loaders/*"],
       "middlewares/*": ["./src/middlewares/*"],
       "routes/*": ["./src/routes/*"],

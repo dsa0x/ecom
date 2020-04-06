@@ -1,9 +1,18 @@
-import express, { Request, Response, NextFunction, Application } from "express";
+import express, {
+  Request,
+  Response,
+  NextFunction,
+  RequestHandler,
+} from "express";
 // import bodyParser from "body-parser";
-
+import swaggerUi from "swagger-ui-express";
+import { swaggerDocument } from "services/swagger";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import Logger from "morgan";
+import routes from "routes/v1";
+import passport from "passport";
+import "services/passport";
 const app = express();
 
 //parse incoming requests
@@ -22,10 +31,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(Logger("combined")); //To log messages
 app.use(cookieParser()); //To parse cookies
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(routes);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //catch 404 errors
 app.use((req: Request, res: Response, next: NextFunction) =>
-  next(new Error("Not found"))
+  next(new Error("Page Not found"))
 );
 // };
 
