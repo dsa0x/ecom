@@ -13,6 +13,8 @@ import Logger from "morgan";
 import routes from "routes/v1";
 import passport from "passport";
 import "services/passport";
+// import { passportJWT } from "services/passport";
+
 const app = express();
 
 //parse incoming requests
@@ -31,8 +33,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(Logger("combined")); //To log messages
 app.use(cookieParser()); //To parse cookies
+require("services/passport");
 app.use(passport.initialize());
 app.use(passport.session());
+// passport.use('jwt',passportJWT)
 
 app.use(routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));

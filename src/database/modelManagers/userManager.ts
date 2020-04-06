@@ -14,21 +14,25 @@ export default class UserManager {
       throw new Error("Passwords do not match");
     }
     try {
-      const _user = await new User({ user });
-      _user.hashPassword(user.password);
+      const _user = await new User(user);
+      // _user.password = await _user.hashPassword(user.password);
       await _user.save();
       return _user.toObject();
     } catch (e) {
-      return e;
+      throw new Error(`error occurred: ${e}`);
     }
   }
 
   public static async update(_id: Types.ObjectId): Promise<IUser> {
-    const user = await User.updateOne(
-      { _id: "2" },
-      { $set: { updatedAt: new Date() } }
-    ); //.lean().exec()
-    return user;
+    try {
+      const user = await User.updateOne(
+        { _id },
+        { $set: { updatedAt: new Date() } }
+      ); //.lean().exec()
+      return user;
+    } catch (e) {
+      throw new Error(`error occurred: ${e}`);
+    }
   }
 
   public static async findById(_id: Types.ObjectId): Promise<IUser> {
@@ -38,7 +42,20 @@ export default class UserManager {
     return user;
   }
   public static async findByEmail(email: string): Promise<IUser> {
-    const user = await User.findOne({ email });
-    return user;
+    try {
+      const user = await User.findOne({ email }).select("-password");
+      return user;
+    } catch (e) {
+      throw new Error(`error occurred: ${e}`);
+    }
+  }
+
+  public static async updates(): Promise<IUser> {
+    try {
+      const user = await User.findOne({}).select("-password");
+      return user;
+    } catch (e) {
+      throw new Error(`error occurred: ${e}`);
+    }
   }
 }

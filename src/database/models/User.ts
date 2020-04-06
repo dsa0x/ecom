@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { promisify } from "util";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
-
 bcrypt.hash = promisify(bcrypt.hash);
 
 export enum Role {
@@ -26,8 +25,28 @@ export interface IUser extends Document {
   validatePassword(password: string): boolean;
 }
 
+export interface IUserSchema {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  role?: Role;
+  verified?: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  hashPassword(password: string): string;
+  validatePassword(password: string): boolean;
+}
+
 const UserSchema = new Schema({
-  name: {
+  firstName: {
+    type: String,
+    required: true,
+    maxlength: 100,
+  },
+  lastName: {
     type: String,
     required: true,
     maxlength: 100,
@@ -78,8 +97,12 @@ UserSchema.virtual("fullName").get(function () {
 UserSchema.methods.hashPassword = async function (
   password: string
 ): Promise<string> {
-  const hashed = await bcrypt.hash(password, 10);
-  return hashed;
+  try {
+    const hashed = await bcrypt.hash(password, 10);
+    return hashed;
+  } catch (e) {
+    throw new Error(`error occurred: ${e}`);
+  }
 };
 
 UserSchema.methods.validatePassword = async function (
@@ -93,16 +116,20 @@ UserSchema.methods.generateJWT = function () {
   const today = new Date();
   const expirationDate = new Date(today);
   expirationDate.setDate(today.getDate() + 60);
-  const payload: { id: string; email: string; exp: Date } = {
+  const payload: { id: string; email: string; exp: number } = {
     id: this._id,
     email: this.email,
-    exp: expirationDate,
+    exp: expirationDate.getTime() / 1000,
   };
   return jwt.sign(payload, process.env.JWT);
 };
-// UserSchema.methods.confirmPassword = function (password, confirmPassword) {};
 
-UserSchema.pre("save", function () {});
+UserSchema.pre<IUser>("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await this.hashPassword(this.password);
+  }
+  next();
+});
 
 const UserModel = model<IUser>("User", UserSchema, "users");
 export default UserModel;

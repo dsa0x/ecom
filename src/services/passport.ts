@@ -1,37 +1,70 @@
+import { IUser } from "interfaces/IUser";
+import config from "config/index";
 import UserManager from "database/modelManagers/userManager";
+import User from "database/models/User";
+import { Types } from "mongoose";
 import passport from "passport";
-import { Strategy, ExtractJwt, StrategyOptions } from "passport-jwt";
+import { ExtractJwt } from "passport-jwt";
 const LocalStrategy = require("passport-local").Strategy;
+const JWTStrategy = require("passport-jwt").Strategy;
 import {
   VerifyFunction,
   IStrategyOptions,
   IVerifyOptions,
 } from "passport-local";
-// const LocalStrategy = passportLocal.Strategy;
-// let opts: StrategyOptions = {
-//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-// };
-// opts.secretOrKey = "secret";
+
 let opts: IStrategyOptions = {
   usernameField: "email",
   passwordField: "password",
 };
+
+passport.serializeUser((user, done) => {
+  done(null, user);
+});
+
+passport.deserializeUser((user, done) => {
+  done(null, user);
+});
+
 passport.use(
   new LocalStrategy(
     opts,
     async (
       email: string,
       password: string,
-      done: any
-    ): Promise<VerifyFunction> => {
+      done: (error: any, user?: any, options?: IVerifyOptions) => void
+    ): Promise<void> => {
       try {
-        const user = await UserManager.findByEmail(email);
-        if (!user || !user.validatePassword(password)) {
+        const user = await User.findOne({ email });
+
+        if (!user || !(await user.validatePassword(password))) {
           return done(null, false, {
             message: "Invalid email or password",
           });
         }
+
         done(null, user, { message: "Login successful" });
+      } catch (error) {
+        done(error);
+      }
+    }
+  )
+);
+
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: config.jwtSecret,
+    },
+    async function (
+      payload: { id: Types.ObjectId },
+      done: (error: any, user?: any, options?: IVerifyOptions) => void
+    ) {
+      try {
+        const user = await UserManager.findById(payload.id);
+
+        done(null, user);
       } catch (error) {
         done(error);
       }
