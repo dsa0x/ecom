@@ -1,7 +1,7 @@
-import { IUser } from "interfaces/IUser";
+import { IUser } from "interfaces/User";
 import config from "config/index";
-import UserManager from "database/modelManagers/userManager";
-import User from "database/models/User";
+import UserManager from "modelManagers/userManager";
+import User from "models/user";
 import { Types } from "mongoose";
 import passport from "passport";
 import { ExtractJwt } from "passport-jwt";

@@ -15,16 +15,18 @@
       "config/*": ["./src/config/*"],
       "controllers/*": ["./src/controllers/*"],
       "core/*": ["./src/core/*"],
-      "database/*": ["./src/database/*"],
+      "models/*": ["./src/models/*"],
+      "modelManagers/*": ["./src/modelManagers/*"],
       "helpers/*": ["./src/helpers/*"],
       "interfaces/*": ["./src/interfaces/*"],
-      "loaders/*": ["./src/loaders/*"],
+      "setup/*": ["src/setup/*"],
       "middlewares/*": ["./src/middlewares/*"],
       "routes/*": ["./src/routes/*"],
       "services/*": ["./src/services/*"],
       "types/*": ["./src/types/*"]
     }
   },
+  "skipLibCheck": "true",
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "tests"]
 }

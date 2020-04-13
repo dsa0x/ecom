@@ -14,6 +14,7 @@ import routes from "routes/v1";
 import passport from "passport";
 import "services/passport";
 // import { passportJWT } from "services/passport";
+import Stripe from "stripe";
 
 const app = express();
 
@@ -25,7 +26,10 @@ const app = express();
 //We can use express.json() now
 
 // export default ({ app }: { app: Application }) => {
-app.use(express.json());
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.originalUrl === "/webhook") return next();
+  express.json()(req, res, next);
+});
 app.use(express.urlencoded({ extended: true }));
 
 // const corsOptions = {origin: 'http://localhost:3000',optionsSuccessStatus: 200} //optional

@@ -8,6 +8,7 @@ const config: Config = {
   port: parseInt(process.env.PORT) || 7000,
   mongoDbUrl: process.env.MONGODB_URI,
   jwtSecret: process.env.JWT,
+  stripeKey: process.env.STRIPE_SECRET_KEY,
 };
 
 export default config;

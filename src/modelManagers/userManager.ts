@@ -1,9 +1,10 @@
-import User, { IUser, Role } from "database/models/User";
+import { validateSignUp } from "middlewares/validate";
+import User from "models/user";
+import { IUser, Role } from "interfaces/User";
+import { userSchema, userSignInSchema } from "services/joi";
 import { Types } from "mongoose";
+
 export default class UserManager {
-  /**
-   * create
-   */
   //Static functions can be called directly on the model
   public static async create(user: IUser): Promise<IUser> {
     const now = new Date();
@@ -14,12 +15,15 @@ export default class UserManager {
       throw new Error("Passwords do not match");
     }
     try {
+      const validation = userSchema.validate(user);
+      if (validation.error) {
+        throw new Error(`${validation.error.message}`);
+      }
       const _user = await new User(user);
-      // _user.password = await _user.hashPassword(user.password);
       await _user.save();
       return _user.toObject();
-    } catch (e) {
-      throw new Error(`error occurred: ${e}`);
+    } catch (error) {
+      throw new Error(`Error occurred: ${error}`);
     }
   }
 
@@ -30,8 +34,8 @@ export default class UserManager {
         { $set: { updatedAt: new Date() } }
       ); //.lean().exec()
       return user;
-    } catch (e) {
-      throw new Error(`error occurred: ${e}`);
+    } catch (error) {
+      throw new Error(`error occurred: ${error}`);
     }
   }
 
@@ -45,8 +49,8 @@ export default class UserManager {
     try {
       const user = await User.findOne({ email }).select("-password");
       return user;
-    } catch (e) {
-      throw new Error(`error occurred: ${e}`);
+    } catch (error) {
+      throw new Error(`error occurred: ${error}`);
     }
   }
 
@@ -54,8 +58,8 @@ export default class UserManager {
     try {
       const user = await User.findOne({}).select("-password");
       return user;
-    } catch (e) {
-      throw new Error(`error occurred: ${e}`);
+    } catch (error) {
+      throw new Error(`error occurred: ${error}`);
     }
   }
 }

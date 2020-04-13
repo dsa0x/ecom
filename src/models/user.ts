@@ -2,43 +2,9 @@ import { Schema, Document, model, Types } from "mongoose";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { promisify } from "util";
+import { Role, IUser } from "interfaces/User";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 bcrypt.hash = promisify(bcrypt.hash);
-
-export enum Role {
-  Admin = "Admin",
-  User = "User",
-}
-
-export interface IUser extends Document {
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-  role?: Role;
-  verified?: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  hashPassword(password: string): string;
-  validatePassword(password: string): boolean;
-}
-
-export interface IUserSchema {
-  firstName: string;
-  lastName: string;
-  email: string;
-  username: string;
-  password: string;
-  confirmPassword: string;
-  role?: Role;
-  verified?: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  hashPassword(password: string): string;
-  validatePassword(password: string): boolean;
-}
 
 const UserSchema = new Schema({
   firstName: {
@@ -62,7 +28,7 @@ const UserSchema = new Schema({
     type: String,
     unique: true,
     required: true,
-    maxlength: 100,
+    maxlength: 30,
     lowercase: true,
   },
   password: {

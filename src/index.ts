@@ -1,8 +1,10 @@
+import CartManager from "modelManagers/cartManager";
+import mongoose from "mongoose";
 import express from "express";
-import app from "loaders/express";
-import "loaders/mongoose";
+import app from "setup/express";
+import "setup/mongoose";
+import { db, dbStart } from "setup/mongoose";
 import config from "./config";
-// import app fr
 
 const clearTerminal = () => {
   const { exec } = require("child_process");
@@ -17,11 +19,16 @@ const clearTerminal = () => {
       return;
     }
     console.log(`stdout: ${stdout}`);
+    console.log(`server running on port : ${config.port}`);
   });
 };
 
-clearTerminal();
+dbStart(
+  app.listen(config.port, () => {
+    // clearTerminal();
+  })
+);
 
-app.listen(config.port, () => {
-  console.log(`server running on port : ${config.port}`);
-});
+// app.listen(config.port, () => {
+//   // clearTerminal();
+// });
