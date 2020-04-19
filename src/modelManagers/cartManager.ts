@@ -167,7 +167,6 @@ export default class CartManager {
   public static async checkExpiredCart(id: Types.ObjectId) {
     const threshold = new Date();
     threshold.setMinutes(threshold.getMinutes() - 30);
-    // const pr = await ProductModel.findOneAndUpdate();
     const carts = await CartModel.find({
       updatedAt: { $lte: threshold },
       status: "active",

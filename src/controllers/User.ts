@@ -13,6 +13,7 @@ interface Crud {
   update?(req: Request, res: Response, next: NextFunction): void;
   delete?(req: Request, res: Response, next: NextFunction): void;
 }
+
 export class UserController implements Crud {
   async create(req: Request, res: Response, next: NextFunction) {
     try {

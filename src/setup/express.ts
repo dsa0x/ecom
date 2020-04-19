@@ -15,8 +15,11 @@ import passport from "passport";
 import "services/passport";
 // import { passportJWT } from "services/passport";
 import Stripe from "stripe";
+import helmet from "helmet";
 
 const app = express();
+
+app.use(helmet());
 
 //parse incoming requests
 //body-parser extract the entire body portion of an incoming request stream and exposes it on req.body.

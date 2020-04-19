@@ -26,10 +26,12 @@ const ProductSchema = new Schema({
   brand: {
     type: String,
   },
-  imagePath: {
-    type: String,
-    default: "",
-  },
+  images: [
+    {
+      type: String,
+      default: "",
+    },
+  ],
   quantity: {
     type: Number,
     default: 1,

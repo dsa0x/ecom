@@ -14,9 +14,20 @@ export const createProduct: RequestHandler = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    const images: Array<string> = [];
+    if (Array.isArray(req.files)) {
+      req.files.forEach((el) => {
+        images.push(`/public/images/${el.filename}`);
+      });
+    }
+
     //convert back to mongoose document
     const _user = User.hydrate(req.user);
-    const product = await ProductManager.create(req.body, _user.id);
+    const product = await ProductManager.create(
+      { ...req.body, images },
+      _user.id
+    );
+
     res.send(product);
   } catch (error) {
     next(error);

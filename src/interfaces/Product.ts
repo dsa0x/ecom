@@ -7,7 +7,7 @@ export interface IProductLean {
   price: number;
   brand: string;
   category: string;
-  imagePath: string;
+  images: string[];
   quantity: number;
   owner: Types.ObjectId;
   reservations: {
