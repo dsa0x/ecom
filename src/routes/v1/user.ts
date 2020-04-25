@@ -11,7 +11,7 @@ router.get("/public", (req, res) => {
   res.send("This is a public route");
 });
 
-router.post("/", user.create);
+router.post("/register", user.create);
 
 router.post("/login", validateSignIn, auth);
 router.get("/logged", authRoute, (req, res) => {

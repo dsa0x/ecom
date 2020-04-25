@@ -16,6 +16,7 @@ import "services/passport";
 // import { passportJWT } from "services/passport";
 import Stripe from "stripe";
 import helmet from "helmet";
+import path from "path";
 
 const app = express();
 
@@ -48,6 +49,8 @@ app.use(passport.session());
 app.use(routes);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+app.use("/assets", express.static(path.join(process.cwd(), "/public")));
+console.log(path.join(process.cwd(), "/public"));
 //catch 404 errors
 app.use((req: Request, res: Response, next: NextFunction) =>
   next(new Error("Page Not found"))

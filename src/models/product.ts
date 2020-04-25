@@ -15,7 +15,15 @@ const ProductSchema = new Schema({
     type: String,
     required: true,
   },
+  slug: {
+    type: String,
+    required: true,
+  },
   price: {
+    type: Number,
+    required: true,
+  },
+  salePrice: {
     type: Number,
     required: true,
   },
@@ -28,8 +36,8 @@ const ProductSchema = new Schema({
   },
   images: [
     {
-      type: String,
-      default: "",
+      id: { type: String, default: "" },
+      url: { type: String, default: "" },
     },
   ],
   quantity: {

@@ -14,17 +14,12 @@ export const createProduct: RequestHandler = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const images: Array<string> = [];
-    if (Array.isArray(req.files)) {
-      req.files.forEach((el) => {
-        images.push(`/public/images/${el.filename}`);
-      });
-    }
+    const slug = req.body.title.toLowerCase().split(" ").join("-");
 
     //convert back to mongoose document
     const _user = User.hydrate(req.user);
     const product = await ProductManager.create(
-      { ...req.body, images },
+      { ...req.body, slug },
       _user.id
     );
 

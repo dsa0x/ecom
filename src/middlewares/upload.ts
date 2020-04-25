@@ -7,8 +7,30 @@ export const uploadFiles = async (
   res: Response,
   next: NextFunction
 ) => {
-  const images = promisify(upload.array("images", 5));
-  await images(req, res);
-  next();
-  // const images(req, res);
+  try {
+    const images = promisify(upload.array("images", 5));
+    await images(req, res);
+    next();
+    // const images(req, res);
+  } catch (err) {
+    console.log(err);
+    next(err);
+  }
+};
+export const uploadSingle = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // console.log(req.file, "res");
+    console.log("res-----------------");
+    const images = promisify(upload.single("file[0]"));
+    await images(req, res);
+    console.log(images);
+
+    // const images(req, res);
+  } catch (err) {
+    console.log(err);
+  }
 };

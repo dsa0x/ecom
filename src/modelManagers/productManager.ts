@@ -61,7 +61,10 @@ export default class ProductManager {
   }
 
   public static async findAll(): Promise<IProduct[]> {
-    const products: IProduct[] = await Product.find({}).lean<IProduct>().exec();
+    const products: IProduct[] = await Product.find({})
+      .select(["-owner"])
+      .lean<IProduct>()
+      .exec();
     return products;
   }
 
