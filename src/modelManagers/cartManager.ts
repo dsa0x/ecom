@@ -8,6 +8,7 @@ import { ICart, ICartLean } from "interfaces/Cart";
 export default class CartManager {
   public static async findCartById(id: Types.ObjectId) {
     const cart = await CartModel.findById(id);
+
     return cart;
   }
   public static async addToCart(
@@ -21,6 +22,7 @@ export default class CartManager {
       item: product._id,
       quantity: productQuantity,
       totalPrice,
+      title: product.title,
       price: product.price,
     };
     try {
@@ -37,6 +39,7 @@ export default class CartManager {
             "products.item": productId,
             status: "active",
             "products.price": product.price,
+            "products.title": product.title,
           },
           {
             $inc: {
@@ -44,10 +47,10 @@ export default class CartManager {
               "products.$.totalPrice": totalPrice,
               total: totalPrice,
             },
-            // $set: { "products.$.price": product.price },
           },
           { new: true }
         );
+
         return cart;
       }
       const cart = await CartModel.findOneAndUpdate(
@@ -77,9 +80,21 @@ export default class CartManager {
     try {
       //   const cartItem = await CartModel.findById(userId);
       const existingProduct = cartItem.products.filter((product) => {
-        return (product.item = productId);
+        return product.item == productId;
       });
+
       if (existingProduct) {
+        if (existingProduct[0].quantity == 1) {
+          const cart = await CartModel.findOneAndUpdate(
+            { _id: userId },
+            {
+              $set: { updatedAt: new Date() },
+              $pull: { products: { item: productId } },
+            },
+            { new: true }
+          );
+          return cart;
+        }
         const totalPrice = existingProduct[0].price * quantity;
         const cart = await CartModel.findOneAndUpdate(
           {
@@ -90,6 +105,7 @@ export default class CartManager {
             $inc: {
               "products.$.quantity": -quantity,
               "products.$.totalPrice": -totalPrice,
+              total: -totalPrice,
             },
           },
           { new: true }

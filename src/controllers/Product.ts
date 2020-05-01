@@ -14,10 +14,16 @@ export const createProduct: RequestHandler = async (
   next: NextFunction
 ): Promise<void> => {
   try {
+    let { role } = req.user as any;
+    if (role != "Admin") {
+      res.status(401).send({ message: "Unauthorized access" });
+      return;
+    }
     const slug = req.body.title.toLowerCase().split(" ").join("-");
+    if (req.body.images.length == 0) req.body.images.push("default-image.png");
 
-    //convert back to mongoose document
     const _user = User.hydrate(req.user);
+
     const product = await ProductManager.create(
       { ...req.body, slug },
       _user.id

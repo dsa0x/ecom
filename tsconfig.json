@@ -10,6 +10,7 @@
     "baseUrl": "./",
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowSyntheticDefaultImports": true,
+
     "paths": {
       "*": ["node_modules/*", "src/types/*"],
       "config/*": ["./src/config/*"],
@@ -26,6 +27,7 @@
       "types/*": ["./src/types/*"]
     }
   },
+
   "skipLibCheck": "true",
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "tests"]

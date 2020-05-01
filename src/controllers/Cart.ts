@@ -18,10 +18,13 @@ export const getCart: RequestHandler = async (
     const { _id: userId }: { _id: Types.ObjectId } = <any>req.user;
     let cart = await CartManager.findCartById(userId);
     if (!cart) {
-      res.send({ cart: [] });
+      res.send({
+        cart: {
+          products: [],
+        },
+      });
     }
 
-    console.log(JSON.stringify(cart));
     res.send({ cart });
   } catch (err) {
     res.status(400).send(err);
@@ -60,6 +63,7 @@ export const addToCart: RequestHandler = async (
       );
       // console.log(cart, "removed");
     }
+
     res.send({ cart });
   } catch (err) {
     res.status(400).send(err);

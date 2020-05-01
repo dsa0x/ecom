@@ -2,7 +2,6 @@ import passport from "passport";
 import { Request, Response, NextFunction } from "express";
 
 export const auth = (req: Request, res: Response, next: NextFunction) => {
-  console.log(req.body, "req");
   passport.authenticate("local", (err, user, info) => {
     if (err) return next(err);
     if (err || !user) {
